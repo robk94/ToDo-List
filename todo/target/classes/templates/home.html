@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0" />
+    <title>To-do List</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+          integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="my-3">
+    <form th:action="@{/todos}">
+        <div class="row d-flex">
+            <div class="col-md-6 mt-2">
+                <div class="search">
+                    <i class="fa fa-search"></i>
+                    <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"
+                           placeholder="Enter keyword">
+                    <button type="submit" class="btn btn-secondary">Search</button>
+                </div>
+            </div>
+            <div class="col-md-6 mt-2">
+                <button id="btnClear" class="btn btn-info">Clear</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div th:if="${todos.size() > 0}">
+    <table class="table table-hover table-responsive-xl">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Level</th>
+            <th scope="col">Completed</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="todo : ${todos}">
+            <th scope="row">[[${todo.id}]]</th>
+            <td>[[${todo.title}]]</td>
+            <td>[[${todo.description}]]</td>
+            <td>[[${todo.level}]]</td>
+            <td>
+                <a th:if="${todo.completed == true}" class="fa-regular fa-square-check"
+                   th:href="@{'/todos/' + ${todo.id} + '/completed/false'}" title="Disable this task"></a>
+                <a th:if="${todo.completed == false}" class="fa-regular fa-square icon-dark"
+                   th:href="@{'/todos/' + ${todo.id} + '/completed/true'}" title="Enable this task"></a>
+            </td>
+            <td>
+                <a th:href="@{'/todos/' + ${todo.id}}" title="Edit this task"
+                   class="fa-regular fa-pen-to-square icon-dark"></a>
+
+                <a th:href="@{'/todos/delete/' + ${todo.id}}" th:todoTitle="${todo.title}" id="btnDelete"
+                   title="Delete this task" class="fa-regular fa-trash-can icon-dark btn-delete"></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="" th:unless="${todos.size() > 0}">
+    <span>No tasks found!</span>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // ...
+
+        $("#btnClear").on("click", function (e) {
+            e.preventDefault();
+            $("#keyword").text("");
+            window.location = "[[@{/todos}]]";
+        });
+    });
+</script>
+
+
+</body>
+
+</html>
